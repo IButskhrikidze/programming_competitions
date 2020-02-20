@@ -34,9 +34,13 @@ vector<Book>books;
 vector<Library>libraries;
 vector<Library>ans;
 
-vector<Library> solve(){
+void solve(){
     random_shuffle(libraries.begin(), libraries.end());
-    
+    int pos = 0;
+    for(int i=0;i<libraries.size();i++){
+        ans.push_back(libraries[i]);        
+    }
+
 }
 
 int main(int argv, char **args){
@@ -68,8 +72,9 @@ int main(int argv, char **args){
         sort(libraries[i].books.begin(), libraries[i].books.end());
     }
 
+    solve();
     fout << ans.size() << endl;
-
+    
     for(auto library : ans){
         fout << library.ID << ' ' << library.books.size() << endl;
         for(auto book : library.books){
