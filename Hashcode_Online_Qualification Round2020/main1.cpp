@@ -10,7 +10,7 @@ public:
     int ID;
     ll score;
     bool operator < (Book B){
-        return B.score < this->score;
+        return B.score > this->score;
     }
 };
 
@@ -19,20 +19,12 @@ public:
     int ID;
     int num_book;
     int signup;
+    int start_scanning;
     int scan_per_day;
     vector<Book>books;
+
     bool operator < (Library L){
-        double sm = 0, sm1 = 0;
-        ll cnt = 0;
-        for(int i=0;i<min(L.books.size(),this->books.size());i++){
-            sm += L.books[i].score;
-        }
-
-        for(int i=0;min(L.books.size(),this->books.size());i++){
-            sm1 += this->books[i].score;
-        }
-
-        return sm/L.signup*L.scan_per_day < sm1/this->signup*this->scan_per_day;
+        return L.signup > this->signup;
     }
 };
 
@@ -49,12 +41,43 @@ vector<Library>ans;
 
 void solve(){
     sort(libraries.begin(), libraries.end());
-    int pos = 0, d = 0;
 
-    for(int i=0;i<libraries.size();i++){
-        ans.push_back(libraries[i]);
+    int day = 0, i=0;
+
+    set <Book> scanned_books;
+    set <Book> ::iterator it;
+
+    while(day < D && i < libraries.size()){
+        Library lib = libraries[i];
+
+        day += lib.signup;
+        lib.start_scanning = day;
+
+        int d = lib.start_scanning, j=lib.num_book-1;
+        while(j>=0 && d<D){
+            for(int k=0; k<lib.scan_per_day; k++){
+                if(j<0){
+                    break;
+                }
+                Book book = lib.books[j];
+                if(scanned_books.find(book) != scanned_books.end()){
+                    scanned_books.insert(book);
+                }
+                else{
+                    lib.books.erase(lib.books.begin()+j);
+                }
+                j--;
+            }
+            d++;
+        }
+
+        if(lib.books.empty()){
+            day -= lib.signup;
+        }
+        else{
+            ans.push_back(lib);
+        }
     }
-
 }
 
 int main(int argv, char **args){
@@ -87,8 +110,10 @@ int main(int argv, char **args){
     }
 
     solve();
+
+
     fout << ans.size() << endl;
-    
+
     for(auto library : ans){
         fout << library.ID << ' ' << library.books.size() << endl;
         for(auto book : library.books){
@@ -96,7 +121,6 @@ int main(int argv, char **args){
         }
         fout << endl;
     }
-
 
     return 0;
 }

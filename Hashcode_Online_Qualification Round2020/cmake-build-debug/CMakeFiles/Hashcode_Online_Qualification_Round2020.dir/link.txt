@@ -1,1 +1,0 @@
-/usr/bin/c++  -g   CMakeFiles/Hashcode_Online_Qualification_Round2020.dir/main.cpp.o  -o Hashcode_Online_Qualification_Round2020 
